@@ -105,8 +105,76 @@ export async function createLocation(
     createdAt: now,
     updatedAt: now,
   };
+  location.completedSections = computeCompletedLocationSections(location);
   await db.entities.add(location);
   return location;
+}
+
+function computeCompletedLocationSections(l: Location): Location['completedSections'] {
+  const sections: NonNullable<Location['completedSections']> = [];
+
+  if (l.subType || l.locationType) {
+    sections.push('type');
+  }
+  if (
+    l.aliases?.length ||
+    l.region ||
+    l.address ||
+    l.neighbourhood ||
+    l.oneLiner ||
+    l.ownedBy ||
+    l.status ||
+    l.population
+  ) {
+    sections.push('identity');
+  }
+  if (l.society?.period || l.society?.socialClass) {
+    sections.push('period');
+  }
+  if (l.atmosphere && Object.values(l.atmosphere).some(Boolean)) {
+    sections.push('atmosphere');
+  }
+  if (l.inhabitants && Object.values(l.inhabitants).some(Boolean)) {
+    sections.push('inhabitants');
+  }
+  if (
+    l.society &&
+    Object.entries(l.society).some(
+      ([key, value]) => key !== 'period' && key !== 'socialClass' && Boolean(value)
+    )
+  ) {
+    sections.push('society');
+  }
+  if (l.romanticRole && Object.values(l.romanticRole).some(Boolean)) {
+    sections.push('romanticRole');
+  }
+  if (l.scenes && Object.values(l.scenes).some(Boolean)) {
+    sections.push('scenes');
+  }
+  if (l.history && Object.values(l.history).some(Boolean)) {
+    sections.push('history');
+  }
+  if (
+    l.mapImageUrl ||
+    l.mapCoordinates ||
+    l.relativePosition ||
+    l.travelTimeFrom ||
+    l.nearestLocationId ||
+    l.periodMapReference
+  ) {
+    sections.push('mapPosition');
+  }
+  if (l.secrets && Object.values(l.secrets).some(Boolean)) {
+    sections.push('secrets');
+  }
+  if (l.writerNotes || l.pinnedNote || l.scenesSetHere?.length || l.referenceLinks?.length || l.colorPalette) {
+    sections.push('writerNotes');
+  }
+  if (l.research && Object.values(l.research).some(Boolean)) {
+    sections.push('research');
+  }
+
+  return sections;
 }
 
 export async function createFaction(
@@ -207,6 +275,11 @@ export async function updateCharacter(id: string, changes: Partial<Character>): 
   await db.entities.put(updated);
 }
 
-export async function deleteCharacter(id: string): Promise<void> {
+export async function deleteEntity(id: string): Promise<void> {
   await db.entities.delete(id);
+}
+
+export async function fetchBoundCharacters(locationId: string, worldId: string): Promise<Character[]> {
+  const allCharacters = await getEntitiesByType<Character>(worldId, 'character');
+  return allCharacters.filter((char) => char.homeLocationId === locationId);
 }

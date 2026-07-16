@@ -4,7 +4,7 @@ import { useWorldStore } from "../store/worldStore";
 import {
   getEntitiesByType,
   getAllEntities,
-  deleteCharacter,
+  deleteEntity,
 } from "../db/entities";
 import type { Character, AnyEntity } from "../types/entities";
 import { EntityLookupProvider } from "../components/editor/EntityLookupContext";
@@ -37,7 +37,7 @@ export function CharacterListPage() {
 
   async function handleDelete(id: string) {
     if (!currentWorldId) return;
-    await deleteCharacter(id);
+    await deleteEntity(id);
     await refresh(currentWorldId);
   }
 

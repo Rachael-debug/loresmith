@@ -128,11 +128,134 @@ export interface Character extends BaseEntity {
 
 export interface Location extends BaseEntity {
   type: 'location';
+
+  // — Core classification —
   locationType: 'continent' | 'region' | 'city' | 'building' | 'landmark' | string;
-  parentLocationId?: string;       // nesting: city inside region inside continent
+  subType?: string;                     // e.g. "Capital city", "Gentlemen's club", "Flower shop"
+  parentLocationId?: string;            // nesting: city inside region inside continent
+
+  // — Identity —
+  aliases?: string[];                   // old names, other names it's known by
+  region?: string;                      // free-text region/territory (in addition to parentLocationId)
+  address?: string;                     // street address or precise in-world locator
+  neighbourhood?: string;               // area within a city
+  oneLiner?: string;                    // single-sentence description for cards/previews
+
+  // — Ownership & status —
   controllingFactionId?: string;
+  ownedBy?: string;                     // free text: person or institution
+  status?: 'active' | 'ruined' | 'abandoned' | 'sealed' | 'contested' | string;
+  accessRules?: string;                 // who can enter, restrictions, requirements
+  population?: string;                  // free text: "~340,000", "Unknown"
+
+  // — Atmosphere —
+  atmosphere?: {
+    description?: string;               // full sensory/emotional description paragraph
+    mood?: string;                      // dark fantasy: "Oppressive, watchful"
+    climate?: string;
+    lightQuality?: string;
+    dominantSound?: string;
+    dominantSmell?: string;
+    temperature?: string;
+    season?: string;
+    timeOfDay?: string;
+    dangerLevel?: string;
+  };
+
+  // — Inhabitants & society (fantasy/literary) —
+  inhabitants?: {
+    primaryInhabitants?: string;
+    factionsPresent?: string[];
+    keyFigureId?: string;               // linked character
+    notableGroups?: string;
+  };
+
+  // — Society & power (literary theme) —
+  society?: {
+    period?: string;                    // "Victorian", "Regency"
+    socialClass?: string;
+    powerStructure?: string;
+    keyInstitution?: string;
+    unspokenRules?: string;
+    typicalVisitor?: string;
+    whoIsExcluded?: string;
+    enablesOrPrevents?: string;
+  };
+
+  // — Romantic role (romance theme) —
+  romanticRole?: {
+    role?: 'safeHaven' | 'tensionPoint' | 'firstMeeting' | 'confessionSite' | 'recurringAnchor' | 'climaxSetting' | string;
+    meaningToProtagonist?: string;
+    meaningToLoveInterest?: string;
+    forcedProximityPotential?: string;
+    keyTropes?: string[];
+  };
+
+  // — History —
+  history?: {
+    era?: 'ancient' | 'medieval' | 'recent' | 'unknown' | string;
+    founded?: string;                   // origin beat
+    presentEvent?: string;              // what's happening here now, in-story
+    anticipatedFate?: string;           // future beat
+    loreAndLegends?: string;
+  };
+
+  // — Scenes (romance theme) —
+  scenes?: {
+    firstVisit?: string;
+    keyScene?: string;
+    emotionalPeak?: string;
+    finalAppearance?: string;
+    sceneNotes?: string;
+  };
+
+  // — Map & position —
   mapImageUrl?: string;
-  mapCoordinates?: { x: number; y: number }; // pin position on parent's map
+  mapCoordinates?: { x: number; y: number; layer?: string }; // pin position on parent's map
+  relativePosition?: string;            // prose directions: "Three days north of Veraketh"
+  travelTimeFrom?: string;              // e.g. "3 days by horse", "10 min walk"
+  nearestLocationId?: string;
+  periodMapReference?: string;          // literary theme: "Stanford's Map of London, 1889, D4"
+
+  // — Secrets (writer-only) —
+  secrets?: {
+    hiddenTruth?: string;
+    secretEntrance?: string;
+    whatLiesBeneath?: string;
+    plannedReveal?: string;
+  };
+
+  // — Writer's notes —
+  writerNotes?: string;
+  scenesSetHere?: string[];
+  referenceLinks?: string[];
+  colorPalette?: string;                // romance theme: "Sage green, warm amber..."
+  pinnedNote?: string;
+
+  // — Research (literary theme) —
+  research?: {
+    accuracyNotes?: string;
+    historicalParallels?: string;
+    detailsToVerify?: string;
+    sources?: string;
+  };
+
+  // — Completion tracking (computed) —
+  completedSections?: Array<
+    | 'type'
+    | 'identity'
+    | 'period'
+    | 'atmosphere'
+    | 'inhabitants'
+    | 'society'
+    | 'romanticRole'
+    | 'scenes'
+    | 'history'
+    | 'mapPosition'
+    | 'secrets'
+    | 'writerNotes'
+    | 'research'
+  >;
 }
 
 export interface Faction extends BaseEntity {

@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { useWorldStore } from "../store/worldStore";
 import { useTheme } from "../theme/theme";
-import type { AnyEntity, Character } from "../types/entities";
-import { deleteCharacter, getAllEntities } from "../db/entities";
+import type { AnyEntity, Character, Location } from "../types/entities";
+import { deleteEntity, getAllEntities } from "../db/entities";
 import { RichTextView } from "../components/editor/RichTextView";
 import WorldNav from "../components/WorldNav";
 import { IconX } from "@tabler/icons-react";
 import { EntityLookupProvider } from "../components/editor/EntityLookupContext";
 import { useNavigate } from "react-router-dom";
 import IndividualCharacter from "../components/individualCharacter";
+import IndividualLocation from "../components/individualLocation";
 
 export default function AllEntitiesPage() {
   const { theme } = useTheme();
@@ -16,6 +17,7 @@ export default function AllEntitiesPage() {
   const currentWorldId = useWorldStore((s) => s.currentWorldId);
   const [allEntities, setAllEntities] = useState<AnyEntity[]>([]);
   const [selectedCharacter, setSelectedCharacter] = useState<Character>();
+  const [selectedLocation, setSelectedLocation] = useState<Location>();
 
   useEffect(() => {
     if (currentWorldId) refresh(currentWorldId);
@@ -30,7 +32,7 @@ export default function AllEntitiesPage() {
 
   async function handleDelete(id: string) {
     if (!currentWorldId) return;
-    await deleteCharacter(id);
+    await deleteEntity(id);
     await refresh(currentWorldId);
   }
 
@@ -50,7 +52,7 @@ export default function AllEntitiesPage() {
         </WorldNav>
 
         <div
-          className={`grid overflow-hidden  relative grid-rows-[auto_1fr]  ${selectedCharacter ? "md:grid-cols-[1fr_300px]" : "grid-cols-1"}`}
+          className={`grid overflow-hidden  relative grid-rows-[auto_1fr]  ${selectedCharacter || selectedLocation ? "md:grid-cols-[1fr_300px]" : "grid-cols-1"}`}
         >
           <div className="flex flex-col gap-6 p-4">
             <div>
@@ -91,7 +93,7 @@ export default function AllEntitiesPage() {
                         <div
                           key={c.id}
                           className={`card ${selectedCharacter?.id === c.id ? "cardselected" : ""}`}
-                          onClick={() => setSelectedCharacter(c)}
+                          onClick={() => {  setSelectedCharacter(c), setSelectedLocation(undefined)}}
                         >
                           <h4 className="text-sm text-text-secondary">
                             {c.role} . {c.status}
@@ -157,13 +159,14 @@ export default function AllEntitiesPage() {
                   (c) => c.type === "location" || c.type === "faction",
                 ).length > 0 ? (
                   <>
-                    {" "}
                     {allEntities
                       .filter(
                         (c) => c.type === "location" || c.type === "faction",
                       )
                       .map((c) => (
-                        <div key={c.id} className="card">
+                        <div key={c.id} 
+                        onClick={() => {setSelectedLocation(c.type === "location" ? c : undefined), setSelectedCharacter(undefined)}}
+                        className={`card ${selectedLocation?.id === c.id ? "cardselected" : ""}`}>
                           {c.type === "location" && (
                             <h4 className="text-sm text-accent-secondary">
                               {theme.vocabulary.entityLabels.location}
@@ -216,6 +219,17 @@ export default function AllEntitiesPage() {
                   worldId={currentWorldId}
                   handleDelete={() => handleDelete(selectedCharacter.id)}
                 />
+              </div>
+            )}
+            {selectedLocation && (
+              <div className="border-l border-border fixed right-0 top-0 md:top-auto w-75 h-full bg-bg-card">
+                <IconX
+                  onClick={() => setSelectedLocation(undefined)}
+                  size={20}
+                  className="fixed right-2 mt-2 cursor-pointer z-1"
+                />
+                <IndividualLocation location={selectedLocation} worldId={currentWorldId}
+                  handleDelete={() => handleDelete(selectedLocation.id)} />
               </div>
             )}
           </div>

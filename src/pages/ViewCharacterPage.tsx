@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import type { AnyEntity, Character } from "../types/entities";
-import { deleteCharacter, getAllEntities, getEntity } from "../db/entities";
+import { deleteEntity, getAllEntities, getEntity } from "../db/entities";
 import { useTheme } from "../theme/theme";
 import WorldNav from "../components/WorldNav";
 import { useNavigate } from "react-router-dom";
@@ -43,7 +43,7 @@ export default function ViewCharacterPage() {
   }, [id]);
   async function handleDelete(id: string) {
     if (!currentWorldId) return;
-    await deleteCharacter(id);
+    await deleteEntity(id);
   }
   async function confirmDelete() {
     if (!id) return;
