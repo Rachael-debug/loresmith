@@ -1,4 +1,4 @@
-export default function DeleteDialog({ entity, setShowDeleteConfirm, confirmDelete }: { entity: string; setShowDeleteConfirm: (show: boolean) => void; confirmDelete: () => void }) {
+export default function DeleteDialog({ entity, entityName, setShowDeleteConfirm, confirmDelete }: { entity: string; entityName: string; setShowDeleteConfirm: (show: boolean) => void; confirmDelete: () => void }) {
     return (
         <>
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
@@ -7,7 +7,7 @@ export default function DeleteDialog({ entity, setShowDeleteConfirm, confirmDele
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg text-text-primary font-display">
-              Delete this character?
+              Delete this {entityName}?
             </h3>
             <p className="mt-2 text-sm text-text-secondary">
               This will permanently remove {entity} from your world.

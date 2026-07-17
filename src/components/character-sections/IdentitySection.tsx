@@ -70,7 +70,7 @@ export function IdentitySection({ draft, onChange }: SectionProps) {
               onClick={() => {
                 (onChange("role", r.title), setCustom(false));
               }}
-              className={`border  rounded-sm p-3 text-text-primary/90 text-sm cursor-pointer   ${isActive ? "bg-bg-surface-alt border-accent-primary text-accent-primary" : "bg-bg-card border-border"}`}
+              className={`border rounded-sm p-3 text-text-primary/90 text-sm cursor-pointer   ${isActive ? "bg-bg-surface-alt border-accent-primary text-accent-primary" : "bg-bg-card border-border"}`}
             >
               <h4>{r.title}</h4>
               <p className="italic text-[10px] text-text-secondary">{r.desc}</p>

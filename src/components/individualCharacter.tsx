@@ -166,12 +166,12 @@ export default function IndividualCharacter({
                     className="flex items-center justify-between rounded-sm border border-border bg-bg-card px-2 py-2 text-sm"
                   >
                     <div className="flex items-center">
-                      <span className={`border ${r.targetType === 'character' ? 'border-accent-secondary text-accent-secondary' : 'border-accent-tertiary text-accent-tertiary'}  p-2 rounded-sm   mr-2`}>
+                      <span className={`font-display border  ${r.targetType === 'character' ? 'border-accent-secondary bg-accent-secondary/5 text-accent-secondary' : 'border-accent-tertiary bg-accent-tertiary/5 text-accent-tertiary'}  p-2 rounded-sm   mr-2`}>
                         {getInitials({ name: nameOf(otherId) })}
                       </span>
-                      <span className="flex flex-col">
+                      <span className="flex flex-col font-display">
                         {nameOf(otherId)}
-                        <span className="text-text-secondary capitalize italic">
+                        <span className="text-text-secondary capitalize italic font-body text-xs">
                           {displayLabel(r)}
                         </span>
                       </span>
@@ -240,6 +240,7 @@ export default function IndividualCharacter({
       {showDeleteConfirm && (
         <DeleteDialog
           entity={character.name}
+          entityName="Character"
           setShowDeleteConfirm={setShowDeleteConfirm}
           confirmDelete={confirmDelete}
         />

@@ -15,6 +15,7 @@ import WorldNav from "../components/WorldNav";
 import { EmptyBox } from "../components/EmptyBox";
 import IndividualLocation from "../components/individualLocation";
 import { IconX } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
 
 export function LocationListPage() {
   const { theme } = useTheme();
@@ -25,6 +26,7 @@ export function LocationListPage() {
   const [locationType, setLocationType] =
     useState<Location["locationType"]>("city");
   const [selectedLocation, setSelectedLocation] = useState<Location>();
+   const navigate = useNavigate();
 
   useEffect(() => {
     if (currentWorldId) refresh(currentWorldId);
@@ -64,7 +66,7 @@ export function LocationListPage() {
         world={currentWorld?.name}
       >
         <button
-          onClick={() => setShowForm((s) => !s)}
+          onClick={() => navigate('new')}
           className={`rounded-lg text-xs border border-border bg-bg-surface px-3 py-1.5 text-text-primary ${theme.id === "literary-historical" ? "text-white" : ""} `}
         >
           + Add {theme.vocabulary.entityLabels.location.toLowerCase()}

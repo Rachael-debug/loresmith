@@ -160,6 +160,8 @@ export interface Location extends BaseEntity {
     season?: string;
     timeOfDay?: string;
     dangerLevel?: string;
+    architecture?: string;
+    interior?: string;
   };
 
   // — Inhabitants & society (fantasy/literary) —

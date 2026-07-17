@@ -96,8 +96,8 @@ const sectionNumber = currentSectionIndex >= 0 ? currentSectionIndex + 1 : 1;
         </div>
       </header>
       <div className="flex flex-1 overflow-y-hidden">
-        <nav className="sidebar md:w-52 shrink-0 border-r border-border py-4 mt-30 md:mt-0 ">
-          <p className="p-4 hidden md:blockuppercase font-display text-[10px] text-text-secondary tracking-[0.2em]">
+        <nav className="sidebar flex flex-col gap-2 md:w-52 shrink-0 border-r border-border py-4 mt-30 md:mt-0 ">
+          <p className="p-4 hidden md:block uppercase font-display text-[10px] text-text-secondary tracking-[0.2em]">
             sections
           </p>
           {CHARACTER_SECTIONS.map((s) => (

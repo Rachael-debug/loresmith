@@ -16,6 +16,7 @@ import { CreateWorldPage } from "./pages/CreateWorldPage";
 import AllEntitiesPage from "./pages/AllEntitiesPage";
 import { CharacterEditorPage } from "./pages/CharacterEditorPage";
 import ViewCharacterPage from "./pages/ViewCharacterPage";
+import { LocationEditorPage } from "./pages/LocationEditorPage";
 
 function Nav({ onNavigate }: { onNavigate?: () => void }) {
   const { theme } = useTheme();
@@ -106,7 +107,8 @@ function WorldShell() {
 
   const hideSidebar = /\/world\/[^/]+\/characters\//.test(location.pathname) && 
   !/\/world\/[^/]+\/characters\/view\//.test(location.pathname) && 
-  !window.matchMedia("(max-width: 768px)").matches;
+  !window.matchMedia("(max-width: 768px)").matches || /\/world\/[^/]+\/locations\//.test(location.pathname) && 
+  !/\/world\/[^/]+\/locations\/view\//.test(location.pathname);
   return (
     <>
       <WorldThemeSync />
@@ -155,6 +157,8 @@ function WorldShell() {
             <Route path="factions" element={<FactionListPage />} />
             <Route path="characters/new" element={<CharacterEditorPage />} />
             <Route path="characters/:id" element={<CharacterEditorPage />} />
+            <Route path="locations/new" element={<LocationEditorPage />} />
+            <Route path="locations/:id" element={<LocationEditorPage />} />
             <Route path="characters/view/:id" element={<ViewCharacterPage />} />
             <Route path="*" element={<AllEntitiesPage />} />
           </Routes>

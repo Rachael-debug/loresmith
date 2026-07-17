@@ -1,16 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../theme/theme";
 import type {
-  AnyEntity,
+  // AnyEntity,
   Character,
-  Faction,
+  // Faction,
   Location,
-  Relationship,
+  // Relationship,
 } from "../types/entities";
 import { RichTextView } from "./editor/RichTextView";
 import { useState, useEffect } from "react";
 import { fetchBoundCharacters } from "../db/entities";
 import { getInitials } from "../utils/utils";
+import DeleteDialog from "./DeleteDialog";
 
 export default function IndividualLocation({
   location,
@@ -25,15 +26,18 @@ export default function IndividualLocation({
   const navigate = useNavigate();
 
   const [boundCharacters, setBoundCharacters] = useState<Character[]>([]);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
-    if (!worldId ) return;
-    // Fetch bound characters for this location
-
-    // Assuming you have a function to fetch characters by location
+    if (!worldId) return;
     fetchBoundCharacters(location.id, worldId).then(setBoundCharacters);
   }, [location.id, worldId]);
 
+  async function confirmDelete() {
+    if (!handleDelete) return;
+    setShowDeleteConfirm(false);
+    await handleDelete();
+  }
 
   return (
     <div className="sidepanel">
@@ -133,18 +137,21 @@ export default function IndividualLocation({
             ) : (
               <ol className="flex flex-col gap-1">
                 {boundCharacters.map((char) => (
-                  <li key={char.id} className="flex items-center rounded-sm border border-border bg-bg-card px-2 py-2 text-sm">
-                  
-                      <span className={`border border-accent-secondary text-accent-secondary  p-2 rounded-sm   mr-2`}>
-                        {getInitials({ name: char.name })} 
+                  <li
+                    key={char.id}
+                    className="flex items-center rounded-sm border border-border bg-bg-card px-2 py-2 text-sm"
+                  >
+                    <span
+                      className={`border border-accent-secondary bg-accent-secondary/10 text-accent-secondary  p-2 rounded-sm   mr-2 font-display`}
+                    >
+                      {getInitials({ name: char.name })}
+                    </span>
+                    <span className="flex flex-col font-display">
+                      {char.name}
+                      <span className="text-text-secondary capitalize italic font-body text-xs">
+                        {char.occupation || "None"}
                       </span>
-                      <span className="flex flex-col">
-                        {char.name}
-                        <span className="text-text-secondary capitalize italic">
-                          {char.occupation || "None"}
-                        </span>
-                      </span>
-                    
+                    </span>
                   </li>
                 ))}
               </ol>
@@ -152,6 +159,32 @@ export default function IndividualLocation({
           </div>
         </div>
       </div>
+      <div className="bottom text-xs">
+        <button
+          onClick={() =>
+            navigate(`/world/${location.worldId}/locations/${location.id}`)
+          }
+        >
+          Edit
+        </button>
+        <button onClick={() => setShowDeleteConfirm(true)}>Delete</button>
+        <button
+          onClick={() =>
+            navigate(`/world/${location.worldId}/locations/view/${location.id}`)
+          }
+        >
+          View
+        </button>
+      </div>
+
+      {showDeleteConfirm && (
+        <DeleteDialog
+          entityName="Location"
+          entity={location.name}
+          setShowDeleteConfirm={setShowDeleteConfirm}
+          confirmDelete={confirmDelete}
+        />
+      )}
     </div>
   );
 }
